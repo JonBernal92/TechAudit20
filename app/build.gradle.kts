@@ -27,28 +27,31 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
 dependencies {
+    // Librerías de UI y Core (Versiones ajustadas en el catálogo)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
-    // Room (Base de Datos Relacional)
+    // Room - Persistencia local relacional 1:N
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
-    // Retrofit (Sincronización Cloud)
+    // Retrofit - Sincronización con API en la nube
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
 }
