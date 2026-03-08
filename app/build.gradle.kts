@@ -39,6 +39,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     // Librerías de UI y Core (Versiones ajustadas en el catálogo)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
