@@ -6,8 +6,6 @@ import retrofit2.http.POST
 
 // Interfaz que define los puntos de conexión (endpoints) de la API
 interface ApiService {
-
-    // Simulación de envío de laboratorios a la nube
-    @POST("laboratorios/sync")
+    @POST("Laboratorio") // Debe coincidir con el nombre del recurso en MockAPI, sino da error
     suspend fun syncLaboratorios(@Body laboratorios: List<Laboratorio>): Response<Unit>
 }
