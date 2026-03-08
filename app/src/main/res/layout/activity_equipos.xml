@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16.dp">
+
+    <TextView
+        android:id="@+id/tvLabNombreDetalle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Equipos del Laboratorio"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/etNombreEquipo"
+        android:layout_width="0.dp"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del Equipo (ej. PC-01)"
+        android:layout_marginTop="12.dp"
+        app:layout_constraintTop_toBottomOf="@id/tvLabNombreDetalle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/etEstadoEquipo"
+        android:layout_width="0.dp"
+        android:layout_height="wrap_content"
+        android:hint="Estado (Operativo / Dañado)"
+        app:layout_constraintTop_toBottomOf="@id/etNombreEquipo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnGuardarEquipo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Añadir Equipo"
+        app:layout_constraintTop_toBottomOf="@id/etEstadoEquipo"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvEquipos"
+        android:layout_width="0.dp"
+        android:layout_height="0.dp"
+        android:layout_marginTop="16.dp"
+        app:layout_constraintTop_toBottomOf="@id/btnGuardarEquipo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
