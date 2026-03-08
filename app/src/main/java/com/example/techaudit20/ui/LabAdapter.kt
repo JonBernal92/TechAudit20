@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.techaudit20.R
 import com.example.techaudit20.data.Laboratorio
 
-// Añadimos un parámetro lambda 'onItemClicked' para gestionar el clic
-class LabAdapter(private val onItemClicked: (Laboratorio) -> Unit) :
-    ListAdapter<Laboratorio, LabAdapter.LabViewHolder>(LabsComparator()) {
+// Adaptador con soporte para Clic Normal (Navegación) y Clic Largo (Gestión/Edición)
+class LabAdapter(
+    private val onItemClicked: (Laboratorio) -> Unit,
+    private val onLongClick: (Laboratorio) -> Unit
+) : ListAdapter<Laboratorio, LabAdapter.LabViewHolder>(LabsComparator()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LabViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,8 +24,16 @@ class LabAdapter(private val onItemClicked: (Laboratorio) -> Unit) :
 
     override fun onBindViewHolder(holder: LabViewHolder, position: Int) {
         val current = getItem(position)
-        // Configuramos el clic en la raíz de la vista (la tarjeta)
+
+        // Listener para navegación al módulo de equipos
         holder.itemView.setOnClickListener { onItemClicked(current) }
+
+        // Listener para activar acciones de edición/eliminación (Mantenimiento de datos)
+        holder.itemView.setOnLongClickListener {
+            onLongClick(current)
+            true // Evento consumido
+        }
+
         holder.bind(current)
     }
 
