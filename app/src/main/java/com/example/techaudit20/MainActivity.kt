@@ -15,7 +15,6 @@ import com.example.techaudit20.ui.TechAuditViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
-    // Inicialización del ViewModel usando la factoría y la instancia de la aplicación
     private val viewModel: TechAuditViewModel by viewModels {
         TechAuditViewModelFactory((application as TechAuditApp).repository)
     }
@@ -24,15 +23,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Referencias a los componentes de la interfaz (UI)
         val etNombre = findViewById<EditText>(R.id.etNombreLab)
         val etEdificio = findViewById<EditText>(R.id.etEdificioLab)
         val btnGuardar = findViewById<Button>(R.id.btnGuardarLab)
+        val btnSync = findViewById<Button>(R.id.btnSyncCloud)
         val recyclerView = findViewById<RecyclerView>(R.id.rvLaboratorios)
 
-        // CORRECCIÓN: Configuración del Adapter con la lógica de navegación al hacer clic
         val adapter = LabAdapter { laboratorio ->
-            // Intent para abrir EquiposActivity pasando datos del laboratorio seleccionado
             val intent = Intent(this, EquiposActivity::class.java).apply {
                 putExtra("LAB_ID", laboratorio.id)
                 putExtra("LAB_NOMBRE", laboratorio.nombre)
@@ -43,23 +40,31 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Observador de LiveData: actualiza la lista automáticamente cuando cambian los datos en Room
         viewModel.allLaboratorios.observe(this) { labs ->
             labs?.let { adapter.submitList(it) }
         }
 
-        // Lógica del botón para insertar un nuevo laboratorio
+        // Lógica para guardar localmente
         btnGuardar.setOnClickListener {
             val nombre = etNombre.text.toString()
             val edificio = etEdificio.text.toString()
-
             if (nombre.isNotEmpty() && edificio.isNotEmpty()) {
                 viewModel.insertLaboratorio(nombre, edificio)
                 etNombre.text.clear()
                 etEdificio.text.clear()
                 Toast.makeText(this, "Laboratorio Guardado", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Módulo 3: Lógica para sincronizar con la nube
+        btnSync.setOnClickListener {
+            Toast.makeText(this, "Sincronizando...", Toast.LENGTH_SHORT).show()
+            viewModel.syncData { success ->
+                if (success) {
+                    Toast.makeText(this, "Sincronización Exitosa", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Error de conexión", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

@@ -16,6 +16,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Button
+        android:id="@+id/btnSyncCloud"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sincronizar"
+        android:backgroundTint="#4CAF50"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <EditText
         android:id="@+id/etNombreLab"
         android:layout_width="0.dp"
