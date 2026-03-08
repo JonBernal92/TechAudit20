@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.techaudit20.R
 import com.example.techaudit20.data.Equipo
 
-// Adaptador especializado para la entidad Equipo
-class EquipoAdapter : ListAdapter<Equipo, EquipoAdapter.EquipoViewHolder>(EquiposComparator()) {
+class EquipoAdapter(private val onLongClick: (Equipo) -> Unit) :
+    ListAdapter<Equipo, EquipoAdapter.EquipoViewHolder>(EquiposComparator()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EquipoViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -21,6 +21,11 @@ class EquipoAdapter : ListAdapter<Equipo, EquipoAdapter.EquipoViewHolder>(Equipo
 
     override fun onBindViewHolder(holder: EquipoViewHolder, position: Int) {
         val current = getItem(position)
+        // Clic largo para editar o eliminar el equipo
+        holder.itemView.setOnLongClickListener {
+            onLongClick(current)
+            true
+        }
         holder.bind(current)
     }
 
@@ -30,19 +35,13 @@ class EquipoAdapter : ListAdapter<Equipo, EquipoAdapter.EquipoViewHolder>(Equipo
 
         fun bind(equipo: Equipo) {
             tvNombre.text = equipo.nombre
-            // Formateamos el texto del estado para mayor claridad
             tvEstado.text = "Estado: ${equipo.estado}"
         }
     }
 
-    // Lógica de comparación eficiente para actualizar la lista de equipos
     class EquiposComparator : DiffUtil.ItemCallback<Equipo>() {
-        override fun areItemsTheSame(oldItem: Equipo, newItem: Equipo): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Equipo, newItem: Equipo): Boolean {
-            return oldItem.nombre == newItem.nombre && oldItem.estado == newItem.estado
-        }
+        override fun areItemsTheSame(oldItem: Equipo, newItem: Equipo): Boolean = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Equipo, newItem: Equipo): Boolean =
+            oldItem.nombre == newItem.nombre && oldItem.estado == newItem.estado
     }
 }
