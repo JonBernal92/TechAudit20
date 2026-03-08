@@ -1,5 +1,6 @@
 package com.example.techaudit20
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -29,8 +30,16 @@ class MainActivity : AppCompatActivity() {
         val btnGuardar = findViewById<Button>(R.id.btnGuardarLab)
         val recyclerView = findViewById<RecyclerView>(R.id.rvLaboratorios)
 
-        // Configuración del RecyclerView con su Adapter
-        val adapter = LabAdapter()
+        // CORRECCIÓN: Configuración del Adapter con la lógica de navegación al hacer clic
+        val adapter = LabAdapter { laboratorio ->
+            // Intent para abrir EquiposActivity pasando datos del laboratorio seleccionado
+            val intent = Intent(this, EquiposActivity::class.java).apply {
+                putExtra("LAB_ID", laboratorio.id)
+                putExtra("LAB_NOMBRE", laboratorio.nombre)
+            }
+            startActivity(intent)
+        }
+
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
