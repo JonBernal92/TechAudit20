@@ -1,27 +1,32 @@
 package com.example.techaudit20.data
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TechAuditDao {
-    // Operaciones para Laboratorios (Módulo 1)
+    // --- Operaciones para Laboratorios ---
     @Query("SELECT * FROM laboratorio_table ORDER BY nombre ASC")
     fun getAllLaboratorios(): Flow<List<Laboratorio>>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertLaboratorio(laboratorio: Laboratorio)
 
-    // Operaciones para Equipos (Módulo 2)
+    @Update
+    suspend fun updateLaboratorio(laboratorio: Laboratorio)
+
+    @Delete
+    suspend fun deleteLaboratorio(laboratorio: Laboratorio)
+
+    // --- Operaciones para Equipos ---
     @Query("SELECT * FROM equipo_table WHERE laboratorioId = :labId")
     fun getEquiposByLaboratorio(labId: Int): Flow<List<Equipo>>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertEquipo(equipo: Equipo)
+
+    @Update
+    suspend fun updateEquipo(equipo: Equipo)
 
     @Delete
     suspend fun deleteEquipo(equipo: Equipo)

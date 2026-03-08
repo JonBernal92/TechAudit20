@@ -6,15 +6,23 @@ import kotlinx.coroutines.launch
 
 class TechAuditViewModel(private val repository: TechAuditRepository) : ViewModel() {
 
-    // Conversión de Flow (Capa de datos) a LiveData (Capa de UI) para observación reactiva
+    // Observador reactivo para la UI (Módulo 1)
     val allLaboratorios: LiveData<List<Laboratorio>> = repository.allLaboratorios.asLiveData()
 
-    // Ejecución de tareas asíncronas en el Scope del ViewModel para evitar Memory Leaks
+    // --- Funciones CRUD para Laboratorios ---
     fun insertLaboratorio(nombre: String, edificio: String) = viewModelScope.launch {
         repository.insertLaboratorio(Laboratorio(nombre = nombre, edificio = edificio))
     }
 
-    // Consulta relacional 1:N filtrada por Clave Foránea (FK)
+    fun updateLaboratorio(laboratorio: Laboratorio) = viewModelScope.launch {
+        repository.updateLaboratorio(laboratorio)
+    }
+
+    fun deleteLaboratorio(laboratorio: Laboratorio) = viewModelScope.launch {
+        repository.deleteLaboratorio(laboratorio)
+    }
+
+    // --- Funciones CRUD para Equipos (Módulo 2) ---
     fun getEquipos(labId: Int): LiveData<List<Equipo>> {
         return repository.getEquiposByLab(labId).asLiveData()
     }
@@ -23,16 +31,22 @@ class TechAuditViewModel(private val repository: TechAuditRepository) : ViewMode
         repository.insertEquipo(Equipo(nombre = nombre, estado = estado, laboratorioId = labId))
     }
 
+    fun updateEquipo(equipo: Equipo) = viewModelScope.launch {
+        repository.updateEquipo(equipo)
+    }
+
+    fun deleteEquipo(equipo: Equipo) = viewModelScope.launch {
+        repository.deleteEquipo(equipo)
+    }
+
     /**
-     * Módulo 3: Lógica de Negocio para Sincronización
-     * Acción: Recupera el estado actual de Room y delega el envío a la capa de red (Retrofit).
+     * Módulo 3: Sincronización Remota
+     * Acción: Lee el estado local de Room (Snapshot) y lo transmite mediante Retrofit.
      */
     fun syncData(onResult: (Boolean) -> Unit) = viewModelScope.launch {
-        // Captura del "Snapshot" actual de los datos en memoria
         val listaLaboratorios = allLaboratorios.value ?: emptyList()
 
         if (listaLaboratorios.isNotEmpty()) {
-            // Operación de red ejecutada en un hilo de E/S (IO Dispatcher) a través del Repositorio
             val success = repository.syncWithCloud(listaLaboratorios)
             onResult(success)
         } else {
@@ -41,7 +55,7 @@ class TechAuditViewModel(private val repository: TechAuditRepository) : ViewMode
     }
 }
 
-// Boilerplate necesario para la creación de ViewModels con constructores parametrizados
+// Factoría para inyección de dependencias en el ViewModel
 class TechAuditViewModelFactory(private val repository: TechAuditRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TechAuditViewModel::class.java)) {
