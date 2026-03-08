@@ -22,11 +22,18 @@ class TechAuditViewModel(private val repository: TechAuditRepository) : ViewMode
         repository.insertEquipo(Equipo(nombre = nombre, estado = estado, laboratorioId = labId))
     }
 
-    // Módulo 3: Lógica para disparar la sincronización con Retrofit
+    // Módulo 3: Lee datos de Room y los envía a la API
     fun syncData(onResult: (Boolean) -> Unit) = viewModelScope.launch {
-        val labs = allLaboratorios.value ?: emptyList()
-        val success = repository.syncWithCloud(labs)
-        onResult(success)
+        // 1. Leemos los datos locales de Room a través del repositorio
+        val listaLaboratorios = allLaboratorios.value ?: emptyList()
+
+        if (listaLaboratorios.isNotEmpty()) {
+            // 2. Enviamos la lista recuperada a la nube mediante Retrofit
+            val success = repository.syncWithCloud(listaLaboratorios)
+            onResult(success)
+        } else {
+            onResult(false) // No hay datos para enviar
+        }
     }
 }
 
